@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -39,11 +38,11 @@ public class ClientService {
     }
 
     @Transactional
-    public ClientRequestDTO createClient (ClientRequestDTO clientRequestDTO) {
+    public Client createClient (ClientRequestDTO clientRequestDTO) {
         Client client = new Client();
         copyDtoToEntity(clientRequestDTO,client);
         clientRepositories.save(client);
-        return copyEntityToDTORequest(client);
+        return client;
     }
     @Transactional
     public ClientRequestDTO  updateClient (UUID id, ClientRequestDTO clientRequestDTO) {
