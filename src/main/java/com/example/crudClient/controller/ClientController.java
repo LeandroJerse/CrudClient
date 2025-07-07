@@ -41,10 +41,19 @@ public class ClientController {
 
         Client newClient = clientService.createClient(clientRequestDTO);
         return ResponseEntity.ok(newClient);
-        
+
     }
 
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ClientRequestDTO> update(@PathVariable UUID id, @Valid @RequestBody ClientRequestDTO dto){
+        dto = clientService.update(id,dto);
+        return ResponseEntity.ok(dto);
 
-
+        }
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<ClientRequestDTO> deleteClient(@PathVariable UUID id){
+        clientService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

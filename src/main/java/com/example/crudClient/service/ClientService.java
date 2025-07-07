@@ -6,6 +6,7 @@ import com.example.crudClient.dto.clientDTO.ClientResponseDTO;
 import com.example.crudClient.repository.ClientRepositories;
 import com.example.crudClient.service.exceptions.DatabaseException;
 import com.example.crudClient.service.exceptions.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -94,5 +95,33 @@ public class ClientService {
     private ClientRequestDTO copyEntityToDTORequest( Client client){
         return new ClientRequestDTO( client.getName(),client.getCpf(),
                 client.getIncome(),client.getBirthDate(),client.getChildren());
+    }
+
+    public @Valid ClientRequestDTO update(UUID id, ClientRequestDTO dto) {
+
+        try {
+            Client client = clientRepositories.getReferenceById(id);
+            copyDtoToEntity(dto,client);
+            clientRepositories.save(client);
+            return dto;
+        }
+        catch(ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("Cliente não encontrado");
+        }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(UUID id) {
+        if(!clientRepositories.existsById(id)){
+            throw new ResourceNotFoundException("Cliente não encontrado");
+        }
+
+        try{
+            clientRepositories.deleteById(id);
+        }
+        catch(DataIntegrityViolationException e ){
+            throw new DatabaseException("Erro ao deletar cliente");
+        }
+
     }
 }
